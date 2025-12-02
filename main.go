@@ -3,12 +3,30 @@ package main
 import(
 	"fmt"
 	"bufio"
+	"os"
 	"strings"
 ) 
 
-func main() {
-	scanner := bufio.NewScanner(strings.NewReader(""))
+func commandExit() error {
+	fmt.Println("Closing the pokedex... Goodbye!")
+	os.Exit(0)
+}
 
-	fmt.Printf("input recieved: %v", scanner.Text)
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	
+	for ;; {
+		fmt.Print("Pokedex > ")
+
+		ok:=scanner.Scan()
+		if !ok {
+			break
+		}
+
+		line:=scanner.Text()
+		
+
+	}
+
 	return
 }
