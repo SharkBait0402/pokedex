@@ -2,11 +2,13 @@ package main
 
 import(
 	"fmt"
+	"bufio"
+	"strings"
 ) 
 
 func main() {
-	words := cleanInput("Hello  World")
-	for _, word := range words{
-		fmt.Println(word)
-	}
+	scanner := bufio.NewScanner(strings.NewReader(""))
+
+	fmt.Printf("input recieved: %v", scanner.Text)
+	return
 }
