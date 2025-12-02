@@ -7,11 +7,6 @@ import(
 	"strings"
 ) 
 
-func commandExit() error {
-	fmt.Println("Closing the pokedex... Goodbye!")
-	os.Exit(0)
-}
-
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	
@@ -23,7 +18,11 @@ func main() {
 			break
 		}
 
-		line:=scanner.Text()
+		input:=strings.ToLower(scanner.Text())
+
+		if cmd, ok := commands[input]; ok {
+			cmd.callback()
+		}
 		
 
 	}
