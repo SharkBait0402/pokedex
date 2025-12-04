@@ -9,6 +9,7 @@ type Cache struct {
 	results map[string]cacheEntry
 	mu sync.Mutex
 	interval time.Duration
+	ticker *time.Ticker
 }
 
 type cacheEntry struct {
@@ -23,15 +24,12 @@ func NewCache(interval time.Duration) *Cache {
 		interval: interval
 	}
 
-	//start reapLoop here
-	//use a ticker to determine how many seconds have passed between each call
-	//eg: ticker is reset at the top of every call to know how long it has been since last call
-
+	go cache.reapLoop()
 	return c
 }
 
 func (c Cache) Add(key string, value []byte) {
- c.Results[key].val = value
+	c.Results[key].val = value
 }
 
 func (c Cache) get(key string) ([]byte, bool) {
@@ -42,6 +40,27 @@ func (c Cache) get(key string) ([]byte, bool) {
 	return stored, true
 }
 
-func (c cache) reapLoop() {
+func (c *cache) reapLoop() {
+
+	ticker:=time.NewTicker(c.interval)
+	defer ticker.Stop()
+
+
+	for range ticker.C {
+		c.mu.Lock()
+		for key, entry := range c.results {
+				age:=time.Since(entry.createdAt)
+				if age > c.interval {
+					delete(c.results, key)
+				}
+			}
+		c.mu.Unlock()
+	}
+	for key, entry := range c.results {
+		age:=time.Since(entry.createdAt)
+		if age > c.interval {
+			delete(c.results, key)
+		}
+	}
 
 }

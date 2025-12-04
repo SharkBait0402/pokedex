@@ -3,7 +3,13 @@ package pokeapi
 import (
 	"net/http"
 	"encoding/json"
+	"github.com/sharkbait0402/pokedex/internal/pokecache"
 )
+
+func Client struct {
+	cache pokecache.Cache
+	httpClient http.Client
+}
 
 type LocationAreaResponse struct {
 	Results []struct {
@@ -14,9 +20,13 @@ type LocationAreaResponse struct {
 	Previous *string
 }
 
-func GetLocations(pageURL *string) (LocationAreaResponse, error) {
+func (*c.Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
 
 	url  := "https://pokeapi.co/api/v2/location-area/"
+
+	if info, ok:=c.cache.Get(pageURL); ok {
+		return info, nil
+	}
 
 	if pageURL != nil {
 		url = *pageURL
@@ -27,8 +37,7 @@ func GetLocations(pageURL *string) (LocationAreaResponse, error) {
 		return LocationAreaResponse{}, err
 	}
 
-	client:=http.Client{}
-	res, err:= client.Do(req)
+	res, err:= c.Client.Do(req)
 	if err!=nil {
 		return LocationAreaResponse{}, err
 	}
@@ -40,6 +49,7 @@ func GetLocations(pageURL *string) (LocationAreaResponse, error) {
 		return LocationAreaResponse{}, err
 	}
 
+	c.cache.Add(url, decoder)
 
 	return data, nil
 
