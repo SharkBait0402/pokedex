@@ -6,7 +6,7 @@ import (
 	"github.com/sharkbait0402/pokedex/internal/pokecache"
 )
 
-func Client struct {
+type Client struct {
 	cache pokecache.Cache
 	httpClient http.Client
 }
@@ -20,24 +20,29 @@ type LocationAreaResponse struct {
 	Previous *string
 }
 
-func (*c.Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
+func (c *Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
 
 	url  := "https://pokeapi.co/api/v2/location-area/"
-
-	if info, ok:=c.cache.Get(pageURL); ok {
-		return info, nil
-	}
 
 	if pageURL != nil {
 		url = *pageURL
 	}
-	
+
+	if info, ok:=c.cache.Get(url); ok {
+		var newInfo LocationAreaResponse
+		err:=json.Unmarshal(info, &newInfo)
+		if err!=nil {
+			return LocationAreaResponse{}, err
+		}
+		return newInfo, nil
+	}
+
 	req, err:=http.NewRequest("GET", url, nil)
 	if err!=nil {
 		return LocationAreaResponse{}, err
 	}
 
-	res, err:= c.Client.Do(req)
+	res, err:= c.httpClient.Do(req)
 	if err!=nil {
 		return LocationAreaResponse{}, err
 	}
@@ -49,7 +54,12 @@ func (*c.Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
 		return LocationAreaResponse{}, err
 	}
 
-	c.cache.Add(url, decoder)
+	newByte, err:=json.Marshal(data)
+	if err!=nil{
+		return LocationAreaResponse{}, err
+	}
+
+	c.cache.Add(url, newByte)
 
 	return data, nil
 

@@ -19,28 +19,34 @@ type cacheEntry struct {
 
 func NewCache(interval time.Duration) *Cache {
 
-	c &cache {
-		results: make(map[string]cacheEntry)
-		interval: interval
+	c := &Cache {
+		results: make(map[string]cacheEntry),
+		interval: interval,
 	}
 
-	go cache.reapLoop()
+	go c.reapLoop()
 	return c
 }
 
-func (c Cache) Add(key string, value []byte) {
-	c.Results[key].val = value
-}
+func (c *Cache) Add(key string, value []byte) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-func (c Cache) get(key string) ([]byte, bool) {
-	stored, ok:=c.Results[key]
-	if !ok {
-		return 0, false
+	c.results[key] = cacheEntry{
+		createdAt: time.Now().UTC(),
+		val: value,
 	}
-	return stored, true
 }
 
-func (c *cache) reapLoop() {
+func (c *Cache) Get(key string) ([]byte, bool) {
+	stored, ok:=c.results[key]
+	if !ok {
+		return nil, false
+	}
+	return stored.val, true
+}
+
+func (c *Cache) reapLoop() {
 
 	ticker:=time.NewTicker(c.interval)
 	defer ticker.Stop()
