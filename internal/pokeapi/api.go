@@ -3,6 +3,7 @@ package pokeapi
 import (
 	"net/http"
 	"encoding/json"
+	"time"
 	"github.com/sharkbait0402/pokedex/internal/pokecache"
 )
 
@@ -18,6 +19,15 @@ type LocationAreaResponse struct {
 	}
 	Next *string
 	Previous *string
+}
+
+func NewClient(timeout, cacheInterval time.Duration) *Client{
+	return &Client{
+		cache: *pokecache.NewCache(cacheInterval),
+		httpClient: http.Client{
+			Timeout: timeout,
+		},
+	}
 }
 
 func (c *Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
@@ -46,6 +56,7 @@ func (c *Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
 	if err!=nil {
 		return LocationAreaResponse{}, err
 	}
+	defer res.Body.Close()
 
 	var data LocationAreaResponse
 	decoder:=json.NewDecoder(res.Body)
@@ -54,12 +65,12 @@ func (c *Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
 		return LocationAreaResponse{}, err
 	}
 
-	newByte, err:=json.Marshal(data)
+	b, err:=json.Marshal(data)
 	if err!=nil{
 		return LocationAreaResponse{}, err
 	}
 
-	c.cache.Add(url, newByte)
+	c.cache.Add(url, b)
 
 	return data, nil
 

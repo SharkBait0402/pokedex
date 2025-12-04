@@ -6,18 +6,19 @@ import (
 	"github.com/sharkbait0402/pokedex/internal/pokeapi"
 )
 
-var cfg struct {
+type config struct {
 	Next *string
 	Previous *string
+	pokeClient *pokeapi.Client
 }
 
-func commandExit() error {
+func commandExit(cfg *config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp() error {
+func commandHelp(cfg *config) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:\n")
 	for _, com := range commands {
@@ -26,8 +27,8 @@ func commandHelp() error {
 	return nil
 }
 
-func commandMap() error {
-	data, _:=pokeapi.GetLocations(cfg.Next)
+func commandMap(cfg *config) error {
+	data, _:=cfg.pokeClient.GetLocations(cfg.Next)
 	cfg.Next = data.Next
 	cfg.Previous = data.Previous
 	for i:=0;i<len(data.Results);i++ {
@@ -36,14 +37,15 @@ func commandMap() error {
 	return nil
 }
 
-func commandMapB() error {
+func commandMapB(cfg *config) error {
+
 
 	if cfg.Previous == nil {
 		fmt.Println("you're on the first page")
 		return nil
 	}
 
-	data, _:=pokeapi.GetLocations(cfg.Previous)
+	data, _:=cfg.pokeClient.GetLocations(cfg.Previous)
 	cfg.Next = data.Next
 	cfg.Previous = data.Previous
 
@@ -56,7 +58,7 @@ func commandMapB() error {
 type cliCommand struct {
 	name string
 	description string
-	callback func() error
+	callback func(*config) error
 }
 
 var commands map[string]cliCommand
