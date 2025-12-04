@@ -24,6 +24,8 @@ func NewCache(interval time.Duration) *Cache {
 	}
 
 	//start reapLoop here
+	//use a ticker to determine how many seconds have passed between each call
+	//eg: ticker is reset at the top of every call to know how long it has been since last call
 
 	return c
 }
