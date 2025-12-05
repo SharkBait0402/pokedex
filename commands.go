@@ -10,6 +10,7 @@ type config struct {
 	Next *string
 	Previous *string
 	pokeClient *pokeapi.Client
+	Name string
 }
 
 func commandExit(cfg *config) error {
@@ -55,10 +56,24 @@ func commandMapB(cfg *config) error {
 	return nil
 }
 
-// func command commmandExplore(cfg *config) error {
-//
-// 	data, _:=cfg.pokeClient.Explore()
-// }
+func commandExplore(cfg *config) error {
+
+	location:=cfg.Name
+	if location==""{
+		return fmt.Errorf("no name was given")
+	}
+
+	data, _:=cfg.pokeClient.Explore(location)
+
+	for i:=0;i<len(data.Pokemon);i++{
+		fmt.Println(data.Pokemon[i].Name)
+	}
+
+	fmt.Println(data.Pokemon, "poke")
+
+	cfg.Name = ""
+	return nil
+}
 
 type cliCommand struct {
 	name string
@@ -91,10 +106,10 @@ func init() {
 				description: "show previous page of locations",
 				callback: commandMapB,
 			},
-			// "explore": {
-			// 	name: "explore",
-			// 	description: "explore an area",
-			// 	callback: commandExplore,
-			// }
+			"explore": {
+				name: "explore",
+				description: "explore an area",
+				callback: commandExplore,
+			},
 	}
 }

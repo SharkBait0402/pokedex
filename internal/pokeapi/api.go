@@ -21,6 +21,14 @@ type LocationAreaResponse struct {
 	Previous *string
 }
 
+type ExploreResponse struct {
+	Name string
+	Pokemon []struct {
+		Name string
+		URL string
+	}
+}
+
 func NewClient(timeout, cacheInterval time.Duration) *Client{
 	return &Client{
 		cache: *pokecache.NewCache(cacheInterval),
@@ -76,40 +84,40 @@ func (c *Client) GetLocations(pageURL *string) (LocationAreaResponse, error) {
 
 }
 
-func (c *Client) Explore(location string) (LocationAreaResponse, error) {
+func (c *Client) Explore(location string) (ExploreResponse, error) {
 
 	url := "https://pokeapi.co/api/v2/location-area/" + location
 
 	if info, ok:=c.cache.Get(url); ok {
-		var newInfo LocationAreaResponse
+		var newInfo ExploreResponse
 		err:=json.Unmarshal(info, &newInfo)
 		if err!=nil {
-			return LocationAreaResponse{}, err
+			return ExploreResponse{}, err
 		}
 		return newInfo, nil
 	}
 
 	req, err:=http.NewRequest("GET", url, nil)
 	if err!=nil {
-		return LocationAreaResponse{}, err
+		return ExploreResponse{}, err
 	}
 
 	res, err:=c.httpClient.Do(req)
 	if err!=nil {
-		return LocationAreaResponse{}, err
+		return ExploreResponse{}, err
 	}
 	defer res.Body.Close()
 
-	var data LocationAreaResponse
+	var data ExploreResponse
 	decoder:=json.NewDecoder(res.Body)
 	err=decoder.Decode(&data)
 	if err!=nil {
-		return LocationAreaResponse{}, err
+		return ExploreResponse{}, err
 	}
 
 	b, err:=json.Marshal(data)
 	if err!=nil{
-		return LocationAreaResponse{}, err
+		return ExploreResponse{}, err
 	}
 
 	c.cache.Add(url, b)

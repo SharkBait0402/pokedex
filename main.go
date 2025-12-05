@@ -30,7 +30,14 @@ func main() {
 
 		comm:=commandWord(input)
 		if comm == "explore" {
-			fmt.Println("exploring now...")
+			cfg.Name=restInput(input)
+			if cmd, ok:=commands[comm]; ok {
+				fmt.Println("exploring now...")
+				if err:=cmd.callback(&cfg); err!=nil{
+					fmt.Println("error:", err)
+				}
+			}
+			
 		}else if cmd, ok := commands[comm]; ok {
 			if err:=cmd.callback(&cfg); err!=nil {
 				fmt.Println("error:", err)
