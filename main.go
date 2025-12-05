@@ -28,7 +28,10 @@ func main() {
 
 		input:=strings.ToLower(scanner.Text())
 
-		if cmd, ok := commands[input]; ok {
+		comm:=commandWord(input)
+		if comm == "explore" {
+			fmt.Println("exploring now...")
+		}else if cmd, ok := commands[comm]; ok {
 			if err:=cmd.callback(&cfg); err!=nil {
 				fmt.Println("error:", err)
 			}

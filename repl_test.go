@@ -17,6 +17,10 @@ func TestCleanInput(t *testing.T) {
 		expected: []string{"charizard", "bulbasaur", "squirtle"},
 	},
 	// add more cases here
+	{
+		input: "explore canaclave city area",
+		expected: []string{"canaclave-city-area"},
+	},
 }
 
 	for _,c := range cases {

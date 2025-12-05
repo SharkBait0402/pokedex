@@ -55,6 +55,11 @@ func commandMapB(cfg *config) error {
 	return nil
 }
 
+// func command commmandExplore(cfg *config) error {
+//
+// 	data, _:=cfg.pokeClient.Explore()
+// }
+
 type cliCommand struct {
 	name string
 	description string
@@ -86,5 +91,10 @@ func init() {
 				description: "show previous page of locations",
 				callback: commandMapB,
 			},
+			// "explore": {
+			// 	name: "explore",
+			// 	description: "explore an area",
+			// 	callback: commandExplore,
+			// }
 	}
 }
