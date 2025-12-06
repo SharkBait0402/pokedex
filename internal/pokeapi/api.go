@@ -23,9 +23,10 @@ type LocationAreaResponse struct {
 
 type ExploreResponse struct {
 	Name string
-	Pokemon []struct {
-		Name string
-		URL string
+	Pokemon_encounters []struct {
+		Pokemon struct {
+			Name string
+		}
 	}
 }
 
@@ -124,50 +125,6 @@ func (c *Client) Explore(location string) (ExploreResponse, error) {
 
 	return data, nil
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

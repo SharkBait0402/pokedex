@@ -33,7 +33,11 @@ func restInput(text string) string {
  final:=""
 
  for i:=1;i<len(words);i++ {
-	final += words[i] + "-"
+	 if i == len(words) - 1{
+		final += words[i]
+	 }else{
+		final += words[i] + "-"
+	 }
  }
 
  return final

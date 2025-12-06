@@ -28,6 +28,11 @@ func main() {
 
 		input:=strings.ToLower(scanner.Text())
 
+		if input == "" {
+			fmt.Println("Please enter a command")
+			continue
+		}
+
 		comm:=commandWord(input)
 		if comm == "explore" {
 			cfg.Name=restInput(input)
