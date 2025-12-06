@@ -66,10 +66,8 @@ func commandExplore(cfg *config) error {
 	data, _:=cfg.pokeClient.Explore(location)
 
 	for i:=0;i<len(data.Pokemon_encounters);i++{
-		fmt.Println(data.Pokemon_encounters[i].Pokemon.Name)
+		fmt.Println("- ", data.Pokemon_encounters[i].Pokemon.Name)
 	}
-
-	fmt.Println(data.Pokemon_encounters[0].Pokemon.Name, "poke")
 
 	cfg.Name = ""
 	return nil
