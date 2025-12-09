@@ -30,6 +30,17 @@ type ExploreResponse struct {
 	}
 }
 
+type PokemonResponse struct {
+	Name string
+	Height int
+	Weight int
+	Stats []struct {
+		Stat struct {
+			Name string
+		}
+	}
+}
+
 func NewClient(timeout, cacheInterval time.Duration) *Client{
 	return &Client{
 		cache: *pokecache.NewCache(cacheInterval),
@@ -125,6 +136,87 @@ func (c *Client) Explore(location string) (ExploreResponse, error) {
 
 	return data, nil
 }
+
+func (c *Client) GetPokemon(pokemon string) (PokemonResponse, error) {
+
+	url := "https://pokeapi.co/api/v2/pokemon/" + pokemon
+
+	req, err:=c.http.NewRequest("GET", url, nil)
+	if err!=nil{
+		return PokemonResponse{}, err
+	}
+
+	res, err:=c.httpClient.Do(req)
+	if err!=nil{
+		return PokemonResponse{}, err
+	}
+
+	defer res.Body.Close()
+
+	var data PokemonResponse
+	decoder:=json.NewDecoder(res.Body)
+	err=deccoder.Decode(&data)
+	if err!=nil{
+		return PokemonResponse{}, err
+	}
+
+	b, err:=json.Marshal(data)
+	if err!=nil{
+		return PokemonResponse{}, err
+	}
+
+	return data, nil
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
