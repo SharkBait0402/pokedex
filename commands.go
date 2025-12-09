@@ -73,6 +73,21 @@ func commandExplore(cfg *config) error {
 	return nil
 }
 
+func commandCatch(cfg *config) error {
+
+	pokemon:=cfg.Name
+	if pokemon==""{
+		return fmt.Errorf("No pokemon was given")
+	}
+
+	data, _:=cfg.pokeClient.GetPokemon(pokemon)
+
+	fmt.Println("Throwing a pokeball at " + data.Name + "...")
+
+	return nil
+
+}
+
 type cliCommand struct {
 	name string
 	description string
@@ -108,6 +123,11 @@ func init() {
 				name: "explore",
 				description: "explore an area",
 				callback: commandExplore,
+			},
+			"catch": {
+				name: "catch",
+				description: "have a chance to catch a pokemon based on experience level",
+				callback: commandCatch,
 			},
 	}
 }

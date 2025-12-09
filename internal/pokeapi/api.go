@@ -141,7 +141,7 @@ func (c *Client) GetPokemon(pokemon string) (PokemonResponse, error) {
 
 	url := "https://pokeapi.co/api/v2/pokemon/" + pokemon
 
-	req, err:=c.http.NewRequest("GET", url, nil)
+	req, err:=http.NewRequest("GET", url, nil)
 	if err!=nil{
 		return PokemonResponse{}, err
 	}
@@ -155,15 +155,15 @@ func (c *Client) GetPokemon(pokemon string) (PokemonResponse, error) {
 
 	var data PokemonResponse
 	decoder:=json.NewDecoder(res.Body)
-	err=deccoder.Decode(&data)
+	err=decoder.Decode(&data)
 	if err!=nil{
 		return PokemonResponse{}, err
 	}
 
-	b, err:=json.Marshal(data)
-	if err!=nil{
-		return PokemonResponse{}, err
-	}
+	// b, err:=json.Marshal(data)
+	// if err!=nil{
+	// 	return PokemonResponse{}, err
+	// }
 
 	return data, nil
 
