@@ -94,9 +94,6 @@ func commandCatch(cfg *config) error {
 
 	randomNum:=rand.Intn(chanceCaught + 1)
 
-	chanceStr:=fmt.Sprintf("random: %d, chance: %d", randomNum, chanceCaught)
-	fmt.Println(chanceStr)
-
 	if randomNum == chanceCaught {
 		fmt.Println(data.Name + " was caught successfully")
 		caughtPokemon[data.Name] = data
@@ -115,7 +112,28 @@ func commandInspect(cfg *config) error {
 	}
 
 	if data,ok:=caughtPokemon[pokemon]; ok{
-		fmt.Println( data)
+
+		formattedStats:=""
+		for _,stat := range data.Stats {
+			form:=fmt.Sprintf("\n- %s: %d", stat.Stat.Name, stat.Base_Stat)
+			formattedStats += form
+		}
+
+		formattedTypes:=""
+		for _,stat := range data.Types {
+			form:=fmt.Sprintf("\n- %s", stat.Type.Name)
+			formattedTypes += form
+		}
+
+		fmt.Println("Name: ", data.Name)
+		fmt.Println("Height: ", data.Height)
+		fmt.Println("Weight: ", data.Weight)
+		fmt.Println("Stats: ", formattedStats)
+		fmt.Println("Types: ", formattedTypes)
+		//height
+		//height
+		//stats
+		//type
 	} else {
 		fmt.Println("pokemon is not caught yet")
 	}

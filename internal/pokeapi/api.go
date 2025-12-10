@@ -36,7 +36,13 @@ type PokemonResponse struct {
 	Height int
 	Weight int
 	Stats []struct {
+		Base_Stat int
 		Stat struct {
+			Name string
+		}
+	}
+	Types  []struct {
+		Type struct {
 			Name string
 		}
 	}
