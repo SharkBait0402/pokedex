@@ -4,6 +4,7 @@ import (
 	"os"
 	"fmt"
 	"github.com/sharkbait0402/pokedex/internal/pokeapi"
+	"math/rand"
 )
 
 type config struct {
@@ -73,6 +74,8 @@ func commandExplore(cfg *config) error {
 	return nil
 }
 
+var caughtPokemon = make(map[string]pokeapi.PokemonResponse)
+
 func commandCatch(cfg *config) error {
 
 	pokemon:=cfg.Name
@@ -80,12 +83,43 @@ func commandCatch(cfg *config) error {
 		return fmt.Errorf("No pokemon was given")
 	}
 
-	data, _:=cfg.pokeClient.GetPokemon(pokemon)
+	data, err:=cfg.pokeClient.GetPokemon(pokemon)
+	if err!=nil {
+		return fmt.Errorf("no pokemon was found with that name")
+	}
 
-	fmt.Println("Throwing a pokeball at " + data.Name + "...")
+	fmt.Println("Throwing a Pokeball at " + data.Name + "...")
+
+	chanceCaught:=data.Base_Experience/40
+
+	randomNum:=rand.Intn(chanceCaught + 1)
+
+	chanceStr:=fmt.Sprintf("random: %d, chance: %d", randomNum, chanceCaught)
+	fmt.Println(chanceStr)
+
+	if randomNum == chanceCaught {
+		fmt.Println(data.Name + " was caught successfully")
+		caughtPokemon[data.Name] = data
+	}
+
+
 
 	return nil
 
+}
+
+func commandInspect(cfg *config) error {
+	pokemon:=cfg.Name
+	if pokemon == "" {
+		return fmt.Errorf("No pokemon was given")
+	}
+
+	if data,ok:=caughtPokemon[pokemon]; ok{
+		fmt.Println( data)
+	} else {
+		fmt.Println("pokemon is not caught yet")
+	}
+	return nil
 }
 
 type cliCommand struct {
@@ -128,6 +162,11 @@ func init() {
 				name: "catch",
 				description: "have a chance to catch a pokemon based on experience level",
 				callback: commandCatch,
+			},
+			"inspect": {
+				name: "inspect",
+				description: "show pokemon stats if already caught",
+				callback: commandInspect,
 			},
 	}
 }

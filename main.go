@@ -43,7 +43,7 @@ func main() {
 				}
 			}
 			
-		}else if comm == "catch" {
+		}else if comm == "catch" || comm == "inspect" {
 
 			cfg.Name=restInput(input)
 			if cmd, ok:=commands[comm]; ok{

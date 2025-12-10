@@ -32,6 +32,7 @@ type ExploreResponse struct {
 
 type PokemonResponse struct {
 	Name string
+	Base_Experience int
 	Height int
 	Weight int
 	Stats []struct {
